@@ -4,10 +4,78 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+
+model Household {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  users     User[]
+  chores    Chore[]
+}
+
+model User {
+  id          String    @id @default(uuid())
+  name        String
+  email       String?   @unique
+  password    String
+  role        Role
+  householdId String
+  household   Household @relation(fields: [householdId], references: [id])
+  chores      Chore[]
+  completions Completion[]
+  streak      Streak?
+  createdAt   DateTime  @default(now())
+}
+
+model Chore {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  recurrence  Recurrence
+  isArchived  Boolean     @default(false)
+  assignedTo  String
+  householdId String
+  user        User        @relation(fields: [assignedTo], references: [id])
+  household   Household   @relation(fields: [householdId], references: [id])
+  completions Completion[]
+  createdAt   DateTime    @default(now())
+}
+
+model Completion {
+  id          String   @id @default(uuid())
+  choreId     String
+  childId     String
+  periodKey   String
+  completedAt DateTime @default(now())
+  chore       Chore    @relation(fields: [choreId], references: [id])
+  child       User     @relation(fields: [childId], references: [id])
+}
+
+model Streak {
+  id                  String   @id @default(uuid())
+  childId             String   @unique
+  currentStreak       Int      @default(0)
+  longestStreak       Int      @default(0)
+  lastCompletedPeriod String?
+  updatedAt           DateTime @updatedAt
+  child               User     @relation(fields: [childId], references: [id])
+}
+
+enum Role {
+  parent
+  child
+}
+
+enum Recurrence {
+  daily
+  weekly
 }
