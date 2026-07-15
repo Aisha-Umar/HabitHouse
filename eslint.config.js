@@ -8,6 +8,7 @@ export default defineConfig([
   globalIgnores(['dist']),
   {
     files: ['**/*.{js,jsx}'],
+    ignores: ['server/**'],   // 👈 don't apply React/browser rules to server code
     extends: [
       js.configs.recommended,
       reactHooks.configs.flat.recommended,
@@ -16,6 +17,12 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+  },
+  {
+    files: ['server/**/*.js'],   // 👈 new block just for backend files
+    languageOptions: {
+      globals: globals.node,     // 👈 Node globals: require, module, process, etc.
     },
   },
 ])
