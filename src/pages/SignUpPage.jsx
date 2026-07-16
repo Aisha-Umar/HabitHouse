@@ -19,7 +19,7 @@ function SignUpPage(){
                 alert('Passwords do not match')
                 return 
             }
-            const response = await fetch('/api/auth', {
+            const response = await fetch('/api/auth/signup', {
             method:'POST',
             headers:{'Content-Type': 'application/json'},
             body:JSON.stringify(formData)
