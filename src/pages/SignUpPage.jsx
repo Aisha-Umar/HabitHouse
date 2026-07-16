@@ -8,7 +8,8 @@ function SignUpPage(){
         email:'',
         password:'',
         confirmPassword:'',
-        role:'parent'
+        role:'parent',
+        householdName:''
     }) 
 
     const handleSubmit= async (e) => {
@@ -18,7 +19,7 @@ function SignUpPage(){
                 alert('Passwords do not match')
                 return 
             }
-            const response = await fetch('/api/auth/signup', {
+            const response = await fetch('/api/auth', {
             method:'POST',
             headers:{'Content-Type': 'application/json'},
             body:JSON.stringify(formData)
@@ -45,6 +46,14 @@ function SignUpPage(){
             placeholder="Your name"
             value={formData.name}
             onChange={(e) => setFormData({...formData, name: e.target.value})}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4"
+          />
+
+          <input
+            type="text"
+            placeholder="Your householdName"
+            value={formData.householdName}
+            onChange={(e) => setFormData({...formData, householdName: e.target.value})}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4"
           />
 
