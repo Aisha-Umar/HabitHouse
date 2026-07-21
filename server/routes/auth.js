@@ -1,6 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require("../generated/prisma");
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -37,3 +37,5 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 });
+
+module.exports = router;
