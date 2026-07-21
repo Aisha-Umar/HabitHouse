@@ -1,5 +1,9 @@
 // server/index.js
+
+require('dns').setDefaultResultOrder('ipv4first');
 require('dotenv').config();
+console.log("DB URL loaded:", process.env.DATABASE_URL ? "yes" : "NO - undefined!");
+console.log("DB URL:", process.env.DATABASE_URL?.replace(/:[^:@]+@/, ':****@'));
 const express = require('express');
 const cors = require('cors');
 const { PrismaClient } = require('./generated/prisma');
