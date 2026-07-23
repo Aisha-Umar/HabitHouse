@@ -1,5 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("../generated/prisma");
 
 const router = express.Router();
@@ -38,5 +39,33 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+router.post("/login", async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email: req.body.email },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password." });
+    }
+
+    const passwordMatches = await bcrypt.compare(req.body.password, user.password);
+
+    if (!passwordMatches) {
+      return res.status(400).json({ message: "Invalid email or password." });
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({ token, role: user.role });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+});
 
 module.exports = router;
