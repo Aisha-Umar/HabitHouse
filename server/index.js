@@ -11,7 +11,7 @@ const { PrismaClient } = require('./generated/prisma');
 
 const authRoutes = require('./routes/auth');
 const choresRoutes = require('./routes/chores');
-// const householdRoutes = require('./routes/household');
+const householdRoutes = require('./routes/household');
 // const progressRoutes = require('./routes/progress');
 
 const app = express();
@@ -25,7 +25,7 @@ app.locals.prisma = prisma;
 
 app.use('/api/auth', authRoutes);
 app.use('/api/chores', choresRoutes);
-// app.use('/api/household', householdRoutes);
+app.use('/api/household', householdRoutes);
 // app.use('/api/progress', progressRoutes);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
