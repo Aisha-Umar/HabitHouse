@@ -22,4 +22,18 @@ router.post('/', verifyToken, async (req, res) => {
   }
 });
 
+router.get('/mine', async (req, res) => {
+  try {
+    const chores = await prisma.chore.findMany({
+      where: {
+        assignedTo: req.query.childId
+      }
+    });
+    res.status(200).json({ chores });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+});
+
 module.exports = router;
