@@ -24,6 +24,26 @@ function MyChoresPage() {
     fetchChores()
   }, [childId])
 
+
+const handleMarkDone = async (choreId) => {
+  try {
+    const response = await fetch(`/api/chores/${choreId}/complete?childId=${childId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+
+    const data = await response.json()
+
+    if (response.ok) {
+      console.log('success')
+    } else {
+      console.log(data.message)
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
   return (
     <div className="min-h-screen bg-purple-50 p-6">
       <h1 className="text-2xl font-bold text-purple-900 mb-6">My Chores</h1>
@@ -43,7 +63,7 @@ function MyChoresPage() {
                 {chore.recurrence}
               </span>
             </div>
-            <button className="bg-yellow-400 text-purple-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-300">
+            <button onClick={handleMarkDone(chore.id)} className="bg-yellow-400 text-purple-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-300">
               Mark Done
             </button>
           </div>
