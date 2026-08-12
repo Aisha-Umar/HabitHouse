@@ -36,4 +36,20 @@ router.get('/mine', async (req, res) => {
   }
 });
 
+router.post('/:id/complete', async (req, res) => {
+  try {
+    const completion = await prisma.completion.create({
+      data: {
+        choreId: req.params.id,
+        childId: req.query.childId,
+        periodKey: new Date().toISOString().split('T')[0]
+      }
+    });
+    res.status(201).json({ message: "Chore marked complete!", completion });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+});
+
 module.exports = router;
