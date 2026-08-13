@@ -24,12 +24,15 @@ function Dashboard() {
       <div className="max-w-3xl mx-auto p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-purple-900">Welcome back!</h1>
-       
+
           <button
             onClick={() => navigate("/children")}
             className="bg-yellow-400 text-purple-900 px-4 py-2 rounded-lg font-semibold hover:bg-yellow-300"
           >
             View Children
+          </button>
+          <button onClick={() => navigate("/progress")} className="bg-yellow-400 text-purple-900 px-4 py-2 rounded-lg font-semibold hover:bg-yellow-300">
+            Weekly Report
           </button>
           <button
             onClick={() => setShowModal(true)}
