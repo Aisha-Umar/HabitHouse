@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import ChildrenPage from './pages/ChildrenPage'
 import MyChoresPage from './pages/MyChoresPage'
+import ProgressPage from './pages/ProgressPage'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/children" element={<ChildrenPage />} />
         <Route path="/mychores/:childId" element={<MyChoresPage />} />
+        <Route path="/progress" element={<ProgressPage />} />
       </Routes>
     </BrowserRouter>
   )
