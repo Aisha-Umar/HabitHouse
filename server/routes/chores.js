@@ -38,22 +38,6 @@ router.get('/mine', async (req, res) => {
 
 router.post('/:id/complete', async (req, res) => {
   try {
-    const completion = await prisma.completion.create({
-      data: {
-        choreId: req.params.id,
-        childId: req.query.childId,
-        periodKey: new Date().toISOString().split('T')[0]
-      }
-    });
-    res.status(201).json({ message: "Chore marked complete!", completion });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Something went wrong" });
-  }
-});
-
-router.post('/:id/complete', async (req, res) => {
-  try {
     const periodKey = new Date().toISOString().split('T')[0];
     const childId = req.query.childId;
 
@@ -113,4 +97,52 @@ router.post('/:id/complete', async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 });
+
+router.get('/progress/household', verifyToken, async (req, res) => {
+  try {
+    const children = await prisma.user.findMany({
+      where: { role: 'child', householdId: req.user.householdId }
+    });
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const sevenDaysAgoKey = sevenDaysAgo.toISOString().split('T')[0];
+
+    const results = [];
+
+    for (const child of children) {
+      const chores = await prisma.chore.findMany({
+        where: { assignedTo: child.id }
+      });
+
+      let expectedTotal = 0;
+      for (const chore of chores) {
+        if (chore.recurrence === 'daily') expectedTotal += 7;
+        if (chore.recurrence === 'weekly') expectedTotal += 1;
+      }
+
+      const completions = await prisma.completion.count({
+        where: {
+          childId: child.id,
+          periodKey: { gte: sevenDaysAgoKey }
+        }
+      });
+
+      const percentage = expectedTotal === 0 ? 0 : Math.round((completions / expectedTotal) * 100);
+
+      results.push({
+        id: child.id,
+        name: child.name,
+        percentage
+      });
+    }
+
+    res.status(200).json({ progress: results });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+});
+
+
 module.exports = router;
